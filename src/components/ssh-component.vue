@@ -9,7 +9,7 @@
     <div v-if="sended" class="col-md-12">
       <div class="mb-5">
       <p>id_rsa</p>
-      <textarea readonly id="generate-ssh-id-rsa" v-model="idRsa" />
+      <textarea class="form-control" readonly id="generate-ssh-id-rsa" v-model="idRsa" />
       <button
         class="btn-icon btn-icon-transparent btn-small fas fa-paste"
         data-toggle="tooltip"
@@ -29,7 +29,7 @@
       
       <div class="id-rsa-pub-div">
       <p>id_rsa.pub</p>
-      <textarea readonly id="generate-ssh-id-rsa-pub" v-model="idRsaPub" />
+      <textarea class="form-control" readonly id="generate-ssh-id-rsa-pub" v-model="idRsaPub" />
       <button
         class="btn-icon fas fa-paste"
         data-toggle="tooltip"
