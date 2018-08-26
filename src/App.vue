@@ -1,19 +1,18 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <sshComponent />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import sshComponent from './components/ssh-component.vue';
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    sshComponent
   }
-}
+};
 </script>
 
 <style lang="scss">
