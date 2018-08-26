@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <sshComponent />
+    <vue-snotify />
   </div>
 </template>
 
@@ -15,7 +16,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
