@@ -318,6 +318,7 @@ export default {
 .btn-icon {
   background-color: transparent;
   border: none;
+  cursor: pointer;
 }
 hr {
   border-top: 1px dashed #ababab;
