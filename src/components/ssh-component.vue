@@ -62,9 +62,6 @@
 <script>
 export default {
   name: 'sshComponent',
-  props: {
-    msg: String
-  },
   data() {
     return {
       sended: false,
