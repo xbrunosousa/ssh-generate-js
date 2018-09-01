@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.4.1/workbox-sw.js");
 
 importScripts(
-  "precache-manifest.d5d8ead55e5652c1e8d53f548c01ab1e.js"
+  "precache-manifest.9ddec66c9aca012ce7507bf18b42b7af.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "ssh-generate-js"});
