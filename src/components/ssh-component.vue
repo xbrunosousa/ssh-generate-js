@@ -1,7 +1,16 @@
 <template>
 <div class="container">
   <div class="input-group mb-3 col-md-6 offset-md-3">
-  <input id="name-ssh-generate" type="text" class="form-control" v-model="username" placeholder="SSH Key name" aria-label="Recipient's username" aria-describedby="button-addon2">
+  <input 
+    id="name-ssh-generate" 
+    @keydown.enter="getKeys" 
+    type="text" 
+    class="form-control" 
+    v-model="username" 
+    placeholder="SSH Key name" 
+    aria-label="Recipient's username" 
+    aria-describedby="button-addon2"
+  />
   <div class="input-group-append">
     <button :disabled="!username" @click='getKeys' class="btn btn-primary" type="button" id="button-addon2">Generate</button>
   </div>
@@ -52,7 +61,7 @@
 
 <script>
 export default {
-  name: "sshComponent",
+  name: 'sshComponent',
   props: {
     msg: String
   },
@@ -63,45 +72,42 @@ export default {
       email: undefined,
       idRsa: undefined,
       idRsaPub: undefined,
-      username: undefined,
-      isClicked: undefined,
-      isDownloaded: false,
-      isChecked: false,
-      btnEnabled: undefined
+      username: undefined
     };
   },
   methods: {
-    btnEnable() {
-      document.getElementById("checkbox-if-downloaded").checked
-        ? (this.btnEnabled = true)
-        : (this.btnEnabled = false);
-    },
     copyKey(element) {
       document.getElementById(element).select();
-      document.execCommand("copy");
-      this.$snotify.success("The key was copied to you clipboard", "");
+      document.execCommand('copy');
+      this.$snotify.success('The key was copied to you clipboard', '');
     },
     downloadKeyFile(name, content) {
-      let atag = document.createElement("a");
+      let atag = document.createElement('a');
       let file = new Blob([content]);
       atag.href = URL.createObjectURL(file);
       atag.download = name;
       atag.click();
-      this.$snotify.success("Your download is starting...", "");
+      this.$snotify.success('Your download is starting...', '');
     },
     getKeys() {
       this.sended = true;
       const extractable = true;
-      var name = "nome da chave",
-        alg = "RSASSA-PKCS1-v1_5",
+      var name = 'nome da chave',
+        alg = 'RSASSA-PKCS1-v1_5',
         size = 1024;
       generateKeyPair(alg, size, name)
-        .then(keys => {// 'get id rsa' and 'id rsa pub'...
-          this.idRsa = `-----BEGIN RSA PRIVATE KEY-----\n${keys[0]}-----END RSA PRIVATE KEY-----`;
-          this.idRsaPub = keys[1].replace("RSASSA-PKCS1-v1_5",`${this.username || "name"}`);
+        .then(keys => {
+          // 'get id rsa' and 'id rsa pub'...
+          this.idRsa = `-----BEGIN RSA PRIVATE KEY-----\n${
+            keys[0]
+          }-----END RSA PRIVATE KEY-----`;
+          this.idRsaPub = keys[1].replace(
+            'RSASSA-PKCS1-v1_5',
+            `${this.username || 'name'}`
+          );
         })
         .catch(() => {
-          this.$snotify.error("", "Error! Please, try again...");
+          this.$snotify.error('', 'Error! Please, try again...');
         })
         .finally(() => {
           this.loading = false;
@@ -109,10 +115,10 @@ export default {
 
       function wrap(text, len) {
         const length = len || 72;
-        let result = "";
+        let result = '';
         for (let i = 0; i < text.length; i += length) {
           result += text.slice(i, i + length);
-          result += "\n";
+          result += '\n';
         }
         return result;
       }
@@ -122,7 +128,7 @@ export default {
       }
 
       function arrayBufferToBase64(buffer) {
-        let binary = "";
+        let binary = '';
         const bytes = new Uint8Array(buffer);
         const len = bytes.byteLength;
         for (let i = 0; i < len; i += 1) {
@@ -135,23 +141,23 @@ export default {
         return window.crypto.subtle
           .generateKey(
             {
-              name: "RSASSA-PKCS1-v1_5",
+              name: 'RSASSA-PKCS1-v1_5',
               modulusLength: 2048, // 1024, 2048, 4096
               publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
-              hash: { name: "SHA-1" } // SHA-1, SHA-256, SHA-384, SHA-512
+              hash: { name: 'SHA-1' } // SHA-1, SHA-256, SHA-384, SHA-512
             },
             true,
-            ["sign", "verify"]
+            ['sign', 'verify']
           )
           .then(key => {
             const privateKey = window.crypto.subtle
-              .exportKey("jwk", key.privateKey)
+              .exportKey('jwk', key.privateKey)
               .then(encodePrivateKey)
               .then(wrap)
               .then(rsaPrivateKey());
 
             const publicKey = window.crypto.subtle
-              .exportKey("jwk", key.publicKey)
+              .exportKey('jwk', key.publicKey)
               .then(jwk => encodePublicKey(jwk, name));
             return Promise.all([privateKey, publicKey]);
           });
@@ -162,7 +168,7 @@ export default {
       }
 
       function stringToArray(s) {
-        return s.split("").map(c => c.charCodeAt());
+        return s.split('').map(c => c.charCodeAt());
       }
 
       function pemToArray(pem) {
@@ -170,7 +176,7 @@ export default {
       }
 
       function arrayToPem(a) {
-        return window.btoa(a.map(c => String.fromCharCode(c)).join(""));
+        return window.btoa(a.map(c => String.fromCharCode(c)).join(''));
       }
 
       function arrayToLen(a) {
@@ -199,15 +205,15 @@ export default {
       }
 
       function decodePublicKey(s) {
-        const split = s.split(" ");
+        const split = s.split(' ');
         const prefix = split[0];
-        if (prefix !== "ssh-rsa") {
+        if (prefix !== 'ssh-rsa') {
           throw new Error(`Unknown prefix: ${prefix}`);
         }
         const buffer = pemToArray(split[1]);
         const nameLen = arrayToLen(buffer.splice(0, 4));
         const type = arrayToString(buffer.splice(0, nameLen));
-        if (type !== "ssh-rsa") {
+        if (type !== 'ssh-rsa') {
           throw new Error(`Unknown key type: ${type}`);
         }
         const exponentLen = arrayToLen(buffer.splice(0, 4));
@@ -227,9 +233,9 @@ export default {
 
       function jwkToInternal(jwk) {
         return {
-          type: "ssh-rsa",
+          type: 'ssh-rsa',
           exponent: checkHighestBit(stringToArray(base64urlDecode(jwk.e))),
-          name: "name",
+          name: 'name',
           key: checkHighestBit(stringToArray(base64urlDecode(jwk.n)))
         };
       }
@@ -264,7 +270,7 @@ export default {
       }
 
       function encodePrivateKey(jwk) {
-        const order = ["n", "e", "d", "p", "q", "dp", "dq", "qi"];
+        const order = ['n', 'e', 'd', 'p', 'q', 'dp', 'dq', 'qi'];
         const list = order.map(prop => {
           const v = checkHighestBit(stringToArray(base64urlDecode(jwk[prop])));
           const len = asnEncodeLen(v.length);
@@ -279,27 +285,27 @@ export default {
 
       function base64urlEncode(arg) {
         const step1 = window.btoa(arg); // Regular base64 encoder
-        const step2 = step1.split("=")[0]; // Remove any trailing '='s
-        const step3 = step2.replace(/\+/g, "-"); // 62nd char of encoding
-        const step4 = step3.replace(/\//g, "_"); // 63rd char of encoding
+        const step2 = step1.split('=')[0]; // Remove any trailing '='s
+        const step3 = step2.replace(/\+/g, '-'); // 62nd char of encoding
+        const step4 = step3.replace(/\//g, '_'); // 63rd char of encoding
         return step4;
       }
 
       function base64urlDecode(s) {
-        const step1 = s.replace(/-/g, "+"); // 62nd char of encoding
-        const step2 = step1.replace(/_/g, "/"); // 63rd char of encoding
+        const step1 = s.replace(/-/g, '+'); // 62nd char of encoding
+        const step2 = step1.replace(/_/g, '/'); // 63rd char of encoding
         let step3 = step2;
         switch (step2.length % 4) { // Pad with trailing '='s
           case 0: // No pad chars in this case
             break;
           case 2: // Two pad chars
-            step3 += "==";
+            step3 += '==';
             break;
           case 3: // One pad char
-            step3 += "=";
+            step3 += '=';
             break;
           default:
-            throw new Error("Illegal base64url string!");
+            throw new Error('Illegal base64url string!');
         }
         return window.atob(step3); // Regular base64 decoder
       }
